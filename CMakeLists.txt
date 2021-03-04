@@ -22,8 +22,15 @@ ELSE()
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -g")
 ENDIF()
 
+#includes
+include_directories(
+    include
+) 
+
+#file to builder
 add_executable(cachedsort
     src/main.cpp
+    src/tools.cpp
 )
 
 install(TARGETS cachedsort 
