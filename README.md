@@ -23,3 +23,13 @@ Merge Sort
 Quick Sort
 
 Tim Sort
+
+
+## Build and Run
+
+```bash
+cmake ./
+make
+
+./cachedsort
+```

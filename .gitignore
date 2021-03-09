@@ -1,1 +1,13 @@
 build
+cachedsort
+
+#visualcode
+.vscode
+
+#cmake
+CMakeCache*
+CMakeFiles*
+Makefile*
+cmake_install*
+
+
