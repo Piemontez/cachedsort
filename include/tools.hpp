@@ -1,8 +1,8 @@
-#ifndef WINDOW_H
-#define WINDOW_H
+#ifndef TOOLS_H
+#define TOOLS_H
 
 //interface da função chamada para ordenar a listagem
-typedef int *(*sort)(const int *list, const int &size);
+typedef void(*sort)(int *list, const int &size);
 
 /**
  * Cria listagem com valores aleatórios
@@ -15,14 +15,20 @@ int** makeUnorderedList(const int listsize, const int testsamout);
  * Cria uma lista ordenada para comparação
  * @listsize: quantidade de itens na lista
  */ 
-int* makeOrderedList(const int listsize);
-
-
-/**
- * Cria uma lista ordenada para comparação
- * @listsize: quantidade de itens na lista
- */ 
 bool isEquals(int* lista, int* listb, const int listsize);
 
 
-#endif // WINDOW_H
+/**
+ * Ordena a listagem com buble Sorte comparação
+ * @size: quantidade de itens na lista
+ */ 
+int *safeSort(const int *list, const int &size);
+
+/**
+ * Imprime a listagem
+ * @size: quantidade de itens na lista
+ */ 
+void printList(const int *list, const int &size);
+
+
+#endif // TOOLS_H

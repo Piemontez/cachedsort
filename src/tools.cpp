@@ -1,7 +1,9 @@
+#include <algorithm>
 #include <iostream>
 #include <time.h> /* time */
 
 #include "tools.hpp"
+#include "algorithms.hpp"
 
 int **makeUnorderedList(const int listsize, const int randomvaluesamout)
 {
@@ -37,16 +39,22 @@ int **makeUnorderedList(const int listsize, const int randomvaluesamout)
     return matrix;
 }
 
-int *makeOrderedList(const int listsize)
+int *safeSort(const int *list, const int &size)
 {
-    srand(time(NULL));
+    int *listCopy = new int[size];
+    std::copy(list, list + size, listCopy);
+    bubbleSort(listCopy, size);
+    return listCopy;
+}
 
-    int *array = new int[listsize];
-    for (int i = 0; i < listsize; ++i)
+void printList(const int *list, const int &size)
+{
+    std::cout << "Listagem:";
+    for (auto j = 0; j < size; j++)
     {
-        array[i] = i;
+        std::cout << list[j] << " ";
     }
-    return array;
+    std::cout << std::endl;
 }
 
 bool isEquals(int *lista, int *listb, const int listsize)

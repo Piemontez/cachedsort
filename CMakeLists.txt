@@ -31,6 +31,7 @@ include_directories(
 add_executable(cachedsort
     src/main.cpp
     src/tools.cpp
+    src/algorithms.cpp
 )
 
 install(TARGETS cachedsort 
