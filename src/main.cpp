@@ -3,13 +3,13 @@
 #include <chrono>
 #include <list>
 
+#include "cachedsort.hpp"
 #include "algorithms.hpp"
 #include "tools.hpp"
 
 #define LIST_SIZE 8
-#define TESTS_AMOUNT 10
+#define TESTS_AMOUNT 1000
 
-void cachedSort(int *list, const int &size);
 
 int main(int argc, char **argv)
 {
@@ -41,10 +41,12 @@ int main(int argc, char **argv)
     int *safeOrder;
     //Totalizador
     std::clock_t startTime, endTime;
-    int totalTime;
+    float totalTime;
+    std::list<float> totalTimes;
 
     for (auto &sort : sorts)
     {
+        totalTime = 0;
         for (int j = 0; j < TESTS_AMOUNT; j++)
         {
             //Cópia da listagem a ser ordenada
@@ -58,7 +60,6 @@ int main(int argc, char **argv)
 
             //Contabiliza o tempo gasto
             totalTime += endTime - startTime;
-
             //Imprime a listagem
             //printList(unordered[j], LIST_SIZE);
             //printList(tocheck, LIST_SIZE);
@@ -77,10 +78,16 @@ int main(int argc, char **argv)
                       << " Time: " << (endTime - startTime)
                       << std::endl;
         }
+        totalTimes.push_back(totalTime);
         std::cout << ".........." << std::endl;
     }
-}
 
-void cachedSort(int *list, const int &size)
-{
+    //Exibe o tempo médio por algorítmo
+    for (auto &time : totalTimes)
+    {
+            std::cout << "Alg:  "
+                      << " Total Time: " << time
+                      << " Average Time: " << (time / TESTS_AMOUNT)
+                      << std::endl;
+    }
 }

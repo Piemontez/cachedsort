@@ -32,6 +32,7 @@ add_executable(cachedsort
     src/main.cpp
     src/tools.cpp
     src/algorithms.cpp
+    src/cachedsort.cpp
 )
 
 install(TARGETS cachedsort 
