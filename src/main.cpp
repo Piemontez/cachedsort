@@ -8,7 +8,7 @@
 #include "tools.hpp"
 
 #define LIST_SIZE 8
-#define TESTS_AMOUNT 1000
+#define TESTS_AMOUNT 100
 
 
 int main(int argc, char **argv)
@@ -43,6 +43,8 @@ int main(int argc, char **argv)
     std::clock_t startTime, endTime;
     float totalTime;
     std::list<float> totalTimes;
+
+    makeTree(LIST_SIZE);
 
     for (auto &sort : sorts)
     {
