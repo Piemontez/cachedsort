@@ -6,9 +6,8 @@ cachedTreeOperation *root;
 
 enum class CachedOperation
 {
-    Compare = 1,
-    ChangeLeaf,
-    Order
+    Compare,
+    NewBranch,
 };
 
 void cachedSort(int *list, const int &size)
@@ -35,68 +34,69 @@ void makeCachedOrder(cachedTreeOperation *leaf)
 /**
  * 
  */
-void makeTree(
-    cachedTreeOperation *leaf,
+cachedTreeOperation *makeTree(
     const CachedOperation &nextOperation,
-    const int &leftDivision,
-    const int &rightDivision,
+    const int &leftPos,
+    const int &rightPos,
     const int &currentLevel,
     const int &maxLevel)
 {
-    const int middle = (leftDivision + rightDivision) / 2;
+    //Fim do nó
+    if (currentLevel + 1 > maxLevel)
+    {
+        return 0;
+    }
+    //Posição do meio
+    const int middle = (leftPos + rightPos) / 2;
+    //Nova operação
+    auto leaf = new cachedTreeOperation;
     leaf->operation = (int)nextOperation;
     leaf->posToCompare = middle;
 
     switch (nextOperation)
     {
-    case CachedOperation::Compare: //Compara
+    //Se for um novo ramo de posições o cache de ordenação até a posição atual.
+    case CachedOperation::NewBranch:
     {
-        //Ultima comparação
-        if (leftDivision == rightDivision)
-        {
-            makeCachedOrder(leaf);
-        }
-        //Fim do nó
-        if (currentLevel + 1 > maxLevel)
-        {
-            return;
-        }
+        makeCachedOrder(leaf);
+    }
+    //Se não for um novo ramo cria o cache de comparação
+    case CachedOperation::Compare:
+    {
         //Ultima comparação á esquerda
-        const bool lastLeftComparison = leftDivision == middle;
+        const bool lastLeftComparison = leftPos == middle;
         //Ultima comparação á direita
-        const bool lastRightComparison = rightDivision == middle;
+        const bool lastRightComparison = rightPos == middle;
         leaf->left = new cachedTreeOperation;
         leaf->right = new cachedTreeOperation;
         if (lastLeftComparison)
         {
-            makeTree(leaf->left, CachedOperation::ChangeLeaf, 0, currentLevel + 1, currentLevel + 1, maxLevel);
+            leaf->left = makeTree(CachedOperation::NewBranch, 0, currentLevel + 1, currentLevel + 1, maxLevel);
         }
         else
         {
-            makeTree(leaf->left, CachedOperation::Compare, leftDivision, middle, currentLevel, maxLevel);
+            leaf->left = makeTree(CachedOperation::Compare, leftPos, middle, currentLevel, maxLevel);
         }
         if (lastRightComparison)
         {
-            makeTree(leaf->right, CachedOperation::ChangeLeaf, 0, currentLevel + 1, currentLevel + 1, maxLevel);
+            leaf->right = makeTree(CachedOperation::NewBranch, 0, currentLevel + 1, currentLevel + 1, maxLevel);
         }
         else
         {
-            makeTree(leaf->right, CachedOperation::Compare, middle, rightDivision, currentLevel, maxLevel);
+            leaf->right = makeTree(CachedOperation::Compare, middle + 1, rightPos, currentLevel, maxLevel);
         }
         break;
     }
-    case CachedOperation::ChangeLeaf:
-    case CachedOperation::Order:
     default:
         break;
     }
+    return leaf;
 }
 
 void makeTree(const int &size)
 {
     assert(size > 1);
-    root = new cachedTreeOperation;
-    makeTree(root, CachedOperation::Compare, 0, 0, 0, size - 1);
+    root = makeTree(CachedOperation::Compare, 0, 0, 0, size - 1);
 }
 /*
 321 231 213   312 132 123
