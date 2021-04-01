@@ -2,13 +2,14 @@
 #include <iostream>
 #include <chrono>
 #include <list>
+#include <assert.h>
 
 #include "cachedsort.hpp"
 #include "algorithms.hpp"
 #include "tools.hpp"
 
-#define LIST_SIZE 5
-#define TESTS_AMOUNT 30
+#define LIST_SIZE 11
+#define TESTS_AMOUNT 1000
 
 int main(int argc, char **argv)
 {
@@ -29,13 +30,13 @@ int main(int argc, char **argv)
     int **unordered = makeUnorderedList(LIST_SIZE, TESTS_AMOUNT);
     //Algoritmos de ordenação;
     std::list<sort> sorts;
-    //sorts.push_back(bubbleSort);
-    //sorts.push_back(selectionSort);
-    //sorts.push_back(insertionSort);
-    //sorts.push_back(shellSort);
-    //sorts.push_back(heapSort);
-    //sorts.push_back(mergeSort);
-    //sorts.push_back(quickSort);
+    sorts.push_back(bubbleSort);
+    sorts.push_back(selectionSort);
+    sorts.push_back(insertionSort);
+    sorts.push_back(shellSort);
+    sorts.push_back(heapSort);
+    sorts.push_back(mergeSort);
+    sorts.push_back(quickSort);
     //sorts.push_back(timSort);
     sorts.push_back(cachedSort);
     //Listagem retornado pelo ordenador;
@@ -75,12 +76,15 @@ int main(int argc, char **argv)
             //Dispacha memória não utilizada
             delete[] tocheck;
             delete[] safeOrder;
+            assert(isEqual);
 
+            /*
             std::cout << "Alg:  "
                       << " Test: " << j
                       << " Ordened: " << (isEqual ? "true" : "false")
                       << " Time: " << (endTime - startTime)
                       << std::endl;
+            */
         }
         totalTimes.push_back(totalTime);
     }
