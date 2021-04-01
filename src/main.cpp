@@ -7,9 +7,8 @@
 #include "algorithms.hpp"
 #include "tools.hpp"
 
-#define LIST_SIZE 8
-#define TESTS_AMOUNT 100
-
+#define LIST_SIZE 3
+#define TESTS_AMOUNT 10
 
 int main(int argc, char **argv)
 {
@@ -20,20 +19,24 @@ int main(int argc, char **argv)
               << "Unordered lists:" << TESTS_AMOUNT
               << std::endl;
 
+
+    std::cout << "Creating cached tree." << std::endl;
+    makeTree(LIST_SIZE);
+
     std::cout << "Creating unordered lists." << std::endl;
 
     //Listagem à ordenar
     int **unordered = makeUnorderedList(LIST_SIZE, TESTS_AMOUNT);
     //Algoritmos de ordenação;
     std::list<sort> sorts;
-    sorts.push_back(bubbleSort);
-    sorts.push_back(selectionSort);
-    sorts.push_back(insertionSort);
-    sorts.push_back(shellSort);
-    sorts.push_back(heapSort);
-    sorts.push_back(mergeSort);
-    sorts.push_back(quickSort);
-    sorts.push_back(timSort);
+    //sorts.push_back(bubbleSort);
+    //sorts.push_back(selectionSort);
+    //sorts.push_back(insertionSort);
+    //sorts.push_back(shellSort);
+    //sorts.push_back(heapSort);
+    //sorts.push_back(mergeSort);
+    //sorts.push_back(quickSort);
+    //sorts.push_back(timSort);
     sorts.push_back(cachedSort);
     //Listagem retornado pelo ordenador;
     int *tocheck;
@@ -44,7 +47,6 @@ int main(int argc, char **argv)
     float totalTime;
     std::list<float> totalTimes;
 
-    makeTree(LIST_SIZE);
 
     for (auto &sort : sorts)
     {
@@ -87,9 +89,9 @@ int main(int argc, char **argv)
     //Exibe o tempo médio por algorítmo
     for (auto &time : totalTimes)
     {
-            std::cout << "Alg:  "
-                      << " Total Time: " << time
-                      << " Average Time: " << (time / TESTS_AMOUNT)
-                      << std::endl;
+        std::cout << "Alg:  "
+            << " Total Time: " << time
+            << " Average Time: " << (time / TESTS_AMOUNT)
+            << std::endl;
     }
 }
