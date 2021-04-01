@@ -22,18 +22,10 @@ cachedTreeOperation *root;
 
 void cachedSort(int *list, const int &size)
 {
-    int pos = 0;
     auto leaf = root;
+    int pos = 1;
     for (;;)
     {
-        if (leaf->operation == (int)CachedOperation::NewBranch)
-        {
-            pos++;
-            if (pos < size)
-            {
-                break;
-            }
-        }
         //Compara novos registros
         if (list[leaf->posToCompare] > list[pos])
         {
@@ -43,9 +35,21 @@ void cachedSort(int *list, const int &size)
         {
             leaf = leaf->right;
         }
+        //Se trocou de ramo
+        if (leaf->operation == (int)CachedOperation::NewBranch)
+        {
+            pos++;
+            if (pos == size)
+            {
+                break;
+            }
+        }
     }
-    //printList(list, size);
-    //printList(leaf->order, size);
+    //Reordena listagem conforme cache
+    auto newList = new int[size];
+    for(int pos = 0; pos < size; pos++)
+        newList[pos] = list[leaf->order[pos]];
+    std::copy(newList, newList + size, list);
 }
 
 /**
@@ -119,7 +123,7 @@ cachedTreeOperation *makeTree(
         //Ultima comparação á direita
         const bool lastRightComparison = rightPos == middle;
 
-        leaf->posToCompare = middle;
+        leaf->posToCompare = lastLeafOrdered->order[middle];
         if (lastLeftComparison)
         {
             leaf->left = makeTree(CachedOperation::NewBranch, 0, currentLevel + 1, currentLevel + 1, maxLevel, lastLeafOrdered, middle);
