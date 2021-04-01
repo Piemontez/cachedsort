@@ -70,17 +70,19 @@ int main(int argc, char **argv)
 
             //Verifica se ordenou a listagem corretamente;
             safeOrder = safeSort(unordered[j], LIST_SIZE);
-            bool isEqual = isEquals(safeOrder, tocheck, LIST_SIZE);
+            //bool isEqual = isEquals(safeOrder, tocheck, LIST_SIZE);
 
             //Dispacha memória não utilizada
             delete[] tocheck;
             delete[] safeOrder;
 
+            /*
             std::cout << "Alg:  "
                       << " Test: " << j
                       << " Ordened: " << (isEqual ? "true" : "false")
                       << " Time: " << (endTime - startTime)
                       << std::endl;
+            */
         }
         totalTimes.push_back(totalTime);
         std::cout << ".........." << std::endl;
