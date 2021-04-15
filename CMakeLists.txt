@@ -5,6 +5,10 @@ project(cachedsort VERSION 0.1.0 DESCRIPTION "CachedSort Test")
 set(CMAKE_BUILD_TYPE Debug)
 file(GLOB SOURCES "*.cpp")
 
+#definitions
+add_definitions(-DCOUNT_OPERATION) #Comment this line to not show the total operations
+
+
 #flags
 #c++11flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")

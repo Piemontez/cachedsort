@@ -1,6 +1,9 @@
 #include <algorithm>
 #include <iostream>
+#include <map>
+#include <cstring>
 #include <time.h> /* time */
+#include <iomanip>
 
 #include "tools.hpp"
 #include "algorithms.hpp"
@@ -67,4 +70,53 @@ bool isEquals(int *lista, int *listb, const int listsize)
         }
     }
     return true;
+}
+
+std::map<const char *, std::map<OperationType, int>> operationsBySorted;
+std::map<const char *, std::map<OperationType, int>>::iterator it;
+std::map<OperationType, int>::iterator operationsIt;
+
+void addOperationCount(const char *sortedName, const OperationType &operationType, const int &amount)
+{
+    operationsBySorted[sortedName][operationType] += amount;
+}
+
+const char *parseString(const OperationType operationType)
+{
+    switch (operationType)
+    {
+    case OperationType::Compare:
+        return "Compare";
+    case OperationType::Swap:
+        return "Swap";
+    case OperationType::Conditional:
+        return "Conditional";
+    case OperationType::AcumulatorChange:
+        return "Acumulator";
+    case OperationType::Loop:
+        return "Loop";
+    case OperationType::Others:
+        return "Others";
+    default:
+        return "N/D";
+        break;
+    }
+}
+
+void printTotalOperations()
+{
+    int total;
+    for (it = operationsBySorted.begin(); it != operationsBySorted.end(); ++it)
+    {
+        total = 0;
+        std::cout << "Sorter: " << std::setw(10) << it->first;
+        for (operationsIt = it->second.begin(); operationsIt != it->second.end(); ++operationsIt)
+        {
+            std::cout << " " << parseString(operationsIt->first) << ": " << std::setw(3) << operationsIt->second;
+            total += operationsIt->second;
+        }
+        std::cout << " T.:" << total;
+
+        std::cout << std::endl;
+    }
 }

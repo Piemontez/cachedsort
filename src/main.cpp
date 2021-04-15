@@ -3,13 +3,14 @@
 #include <chrono>
 #include <list>
 #include <assert.h>
+#include <iomanip>
 
 #include "cachedsort.hpp"
 #include "algorithms.hpp"
 #include "tools.hpp"
 
-#define LIST_SIZE 11
-#define TESTS_AMOUNT 1000
+#define LIST_SIZE 10
+#define TESTS_AMOUNT 10
 
 int main(int argc, char **argv)
 {
@@ -37,7 +38,7 @@ int main(int argc, char **argv)
     sorts.push_back(heapSort);
     sorts.push_back(mergeSort);
     sorts.push_back(quickSort);
-    //sorts.push_back(timSort);
+    //sorts.push_back(timSort); //Contém erros
     sorts.push_back(cachedSort);
     //Listagem retornado pelo ordenador;
     int *tocheck;
@@ -93,8 +94,11 @@ int main(int argc, char **argv)
     for (auto &time : totalTimes)
     {
         std::cout << "Alg:  "
+            << " Average Time: " << std::setw(8) << (time / TESTS_AMOUNT)
             << " Total Time: " << time
-            << " Average Time: " << (time / TESTS_AMOUNT)
             << std::endl;
     }
+#ifdef COUNT_OPERATION
+    printTotalOperations();
+#endif
 }

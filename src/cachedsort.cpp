@@ -22,23 +22,33 @@ cachedTreeOperation *root;
 
 void cachedSort(int *list, const int &size)
 {
+    ADD_OPERATION_COUNT("CACHED", OperationType::Others, 3);
     auto leaf = root;
     int pos = 1;
     for (;;)
     {
+        ADD_OPERATION_COUNT("CACHED", OperationType::Loop, 1);
         //Compara novos registros
+        ADD_OPERATION_COUNT("CACHED", OperationType::Conditional, 1);
+        ADD_OPERATION_COUNT("CACHED", OperationType::Compare, 1);
         if (list[leaf->posToCompare] > list[pos])
         {
+            ADD_OPERATION_COUNT("CACHED", OperationType::Others, 1);
             leaf = leaf->left;
         }
         else
         {
+            ADD_OPERATION_COUNT("CACHED", OperationType::Others, 1);
             leaf = leaf->right;
         }
+
         //Se trocou de ramo
+        ADD_OPERATION_COUNT("CACHED", OperationType::Conditional, 1);
         if (leaf->operation == (int)CachedOperation::NewBranch)
         {
+            ADD_OPERATION_COUNT("CACHED", OperationType::AcumulatorChange, 1);
             pos++;
+            ADD_OPERATION_COUNT("CACHED", OperationType::Conditional, 1);
             if (pos == size)
             {
                 break;
@@ -46,9 +56,19 @@ void cachedSort(int *list, const int &size)
         }
     }
     //Reordena listagem conforme cache
+    ADD_OPERATION_COUNT("CACHED", OperationType::Others, 1);
     auto newList = new int[size];
-    for(int pos = 0; pos < size; pos++)
+    ADD_OPERATION_COUNT("CACHED", OperationType::Others, 1);
+    ADD_OPERATION_COUNT("CACHED", OperationType::Conditional, 1);
+    for(int pos = 0; pos < size; pos++) {
+        ADD_OPERATION_COUNT("CACHED", OperationType::Loop, 1);
+        ADD_OPERATION_COUNT("CACHED", OperationType::Swap, 1);
         newList[pos] = list[leaf->order[pos]];
+
+        ADD_OPERATION_COUNT("CACHED", OperationType::AcumulatorChange, 1);
+        ADD_OPERATION_COUNT("CACHED", OperationType::Conditional, 1);
+    }
+    ADD_OPERATION_COUNT("CACHED", OperationType::Swap, size);
     std::copy(newList, newList + size, list);
 }
 
@@ -75,7 +95,6 @@ void makeCachedOrder(cachedTreeOperation *leaf, const int &currentLevel, cachedT
         }
         leaf->order[newPos] = currentLevel;
     }
-    //printList(leaf->order, currentLevel + 1);
 }
 
 /**
