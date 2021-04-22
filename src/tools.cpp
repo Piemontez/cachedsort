@@ -112,7 +112,7 @@ void printTotalOperations()
         std::cout << "Sorter: " << std::setw(10) << it->first;
         for (operationsIt = it->second.begin(); operationsIt != it->second.end(); ++operationsIt)
         {
-            std::cout << " " << parseString(operationsIt->first) << ": " << std::setw(3) << operationsIt->second;
+            std::cout << " " << parseString(operationsIt->first) << ": " << std::setw(4) << operationsIt->second;
             total += operationsIt->second;
         }
         std::cout << " T.:" << total;

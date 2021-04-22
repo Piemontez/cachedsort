@@ -226,6 +226,7 @@ void heapsort(int a[], int n)
             {
                 break;
             }
+            ADD_OPERATION_COUNT("HEAP", OperationType::Conditional, 1);
         }
         ADD_OPERATION_COUNT("HEAP", OperationType::Swap, 1);
         a[pai] = t;
@@ -242,21 +243,40 @@ void heapSort(int *list, const int &size)
  */
 void selectionSort(int *list, const int &size)
 {
+    ADD_OPERATION_COUNT("SELECTION", OperationType::Others, 4);
     int i, j, min, aux;
+    ADD_OPERATION_COUNT("SELECTION", OperationType::Others, 1);
+    ADD_OPERATION_COUNT("SELECTION", OperationType::Conditional, 1);
     for (i = 0; i < (size - 1); i++)
     {
+        ADD_OPERATION_COUNT("SELECTION", OperationType::Loop, 1);
+        ADD_OPERATION_COUNT("SELECTION", OperationType::Others, 1);
         min = i;
+        ADD_OPERATION_COUNT("SELECTION", OperationType::Others, 1);
+        ADD_OPERATION_COUNT("SELECTION", OperationType::Conditional, 1);
+        ADD_OPERATION_COUNT("SELECTION", OperationType::AcumulatorChange, 1);
         for (j = (i + 1); j < size; j++)
         {
+            ADD_OPERATION_COUNT("SELECTION", OperationType::Loop, 1);
+            ADD_OPERATION_COUNT("SELECTION", OperationType::Compare, 1);
             if (list[j] < list[min])
+            {
+                ADD_OPERATION_COUNT("SELECTION", OperationType::Others, 1);
                 min = j;
+            }
+            ADD_OPERATION_COUNT("SELECTION", OperationType::Conditional, 1);
+            ADD_OPERATION_COUNT("SELECTION", OperationType::AcumulatorChange, 1);
         }
+        ADD_OPERATION_COUNT("SELECTION", OperationType::Compare, 1);
         if (i != min)
         {
+            ADD_OPERATION_COUNT("SELECTION", OperationType::Swap, 1);
             aux = list[i];
             list[i] = list[min];
             list[min] = aux;
         }
+        ADD_OPERATION_COUNT("SELECTION", OperationType::Conditional, 1);
+        ADD_OPERATION_COUNT("SELECTION", OperationType::AcumulatorChange, 1);
     }
 }
 
@@ -265,18 +285,37 @@ void selectionSort(int *list, const int &size)
  */
 int shellSort(int *list, const int &size)
 {
+    ADD_OPERATION_COUNT("SHELL", OperationType::Others, 1);
+    ADD_OPERATION_COUNT("SHELL", OperationType::Conditional, 1);
     for (int gap = size / 2; gap > 0; gap /= 2)
     {
+        ADD_OPERATION_COUNT("SHELL", OperationType::Loop, 1);
+        ADD_OPERATION_COUNT("SHELL", OperationType::Others, 1);
+        ADD_OPERATION_COUNT("SHELL", OperationType::Compare, 1);
+        ADD_OPERATION_COUNT("SHELL", OperationType::AcumulatorChange, 1);
         for (int i = gap; i < size; i += 1)
         {
+            ADD_OPERATION_COUNT("SHELL", OperationType::Loop, 1);
+            ADD_OPERATION_COUNT("SHELL", OperationType::Others, 1);
             int temp = list[i];
 
+            ADD_OPERATION_COUNT("SHELL", OperationType::Others, 1);
             int j;
+            ADD_OPERATION_COUNT("SHELL", OperationType::Compare, 2);
+            ADD_OPERATION_COUNT("SHELL", OperationType::AcumulatorChange, 1);
             for (j = i; j >= gap && list[j - gap] > temp; j -= gap)
+            {
+                ADD_OPERATION_COUNT("SHELL", OperationType::Swap, 1);
                 list[j] = list[j - gap];
+            }
 
+            ADD_OPERATION_COUNT("SHELL", OperationType::Others, 1);
             list[j] = temp;
+            ADD_OPERATION_COUNT("SHELL", OperationType::Compare, 1);
+            ADD_OPERATION_COUNT("SHELL", OperationType::AcumulatorChange, 1);
         }
+        ADD_OPERATION_COUNT("SHELL", OperationType::Conditional, 1);
+        ADD_OPERATION_COUNT("SHELL", OperationType::AcumulatorChange, 1);
     }
     return 0;
 }
@@ -299,7 +338,7 @@ void insertionSort(int *list, const int &size)
         ADD_OPERATION_COUNT("INSERTION", OperationType::AcumulatorChange, 1);
         j = i - 1;
 
-        ADD_OPERATION_COUNT("INSERTION", OperationType::Conditional, 2);
+        ADD_OPERATION_COUNT("INSERTION", OperationType::Conditional, 1);
         ADD_OPERATION_COUNT("INSERTION", OperationType::Compare, 1);
         while (j >= 0 && list[j] > key)
         {
@@ -309,13 +348,13 @@ void insertionSort(int *list, const int &size)
             list[j + 1] = list[j];
             ADD_OPERATION_COUNT("INSERTION", OperationType::AcumulatorChange, 1);
             j = j - 1;
-            ADD_OPERATION_COUNT("INSERTION", OperationType::Conditional, 2);
+            ADD_OPERATION_COUNT("INSERTION", OperationType::Conditional, 1);
             ADD_OPERATION_COUNT("INSERTION", OperationType::Compare, 1);
         }
         ADD_OPERATION_COUNT("INSERTION", OperationType::Swap, 1);
         list[j + 1] = key;
-        ADD_OPERATION_COUNT("INSERTION", OperationType::AcumulatorChange, 1);
         ADD_OPERATION_COUNT("INSERTION", OperationType::Conditional, 1);
+        ADD_OPERATION_COUNT("INSERTION", OperationType::AcumulatorChange, 1);
     }
 }
 
@@ -330,37 +369,24 @@ void swap(int *a, int *b)
 }
 void bubbleSort(int *list, const int &size)
 {
+    ADD_OPERATION_COUNT("BUBBLE", OperationType::Compare, 1);
     if (size < 1)
         return;
 
+    ADD_OPERATION_COUNT("BUBBLE", OperationType::Others, 1);
+    ADD_OPERATION_COUNT("BUBBLE", OperationType::Compare, 1);
     for (int i = 0; i < (size - 1 /*timelost*/); i++)
-        if (list[i] > list[i + 1])
-            swap(&list[i], &list[i + 1]);
-    bubbleSort(list, size - 1);
-}
-
-/**
- * Tim Sort
- */
-const int RUN = 32;
-void timSort(int *list, const int &size)
-{
-    for (int i = 0; i < size; i += RUN)
-        insertionSort(list + i, std::min((i + 31), size));
-
-    for (int idx = RUN; idx < size;
-         idx = 2 * idx)
     {
-
-        for (int left = 0; left < size;
-             left += 2 * idx)
+        ADD_OPERATION_COUNT("BUBBLE", OperationType::Loop, 1);
+        ADD_OPERATION_COUNT("BUBBLE", OperationType::Conditional, 1);
+        ADD_OPERATION_COUNT("BUBBLE", OperationType::Compare, 1);
+        if (list[i] > list[i + 1])
         {
-
-            int mid = left + idx - 1;
-            int right = std::min((left + 2 * idx - 1),
-                                 (size - 1));
-
-            merge(list, left, mid, right);
+            ADD_OPERATION_COUNT("BUBBLE", OperationType::Swap, 1);
+            swap(&list[i], &list[i + 1]);
         }
+        ADD_OPERATION_COUNT("BUBBLE", OperationType::Compare, 1);
+        ADD_OPERATION_COUNT("BUBBLE", OperationType::AcumulatorChange, 1);
     }
+    bubbleSort(list, size - 1);
 }

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <chrono>
-#include <list>
+#include <map>
 #include <assert.h>
 #include <iomanip>
 
@@ -21,7 +21,6 @@ int main(int argc, char **argv)
               << "Unordered lists:" << TESTS_AMOUNT
               << std::endl;
 
-
     std::cout << "Creating cached tree." << std::endl;
     makeTree(LIST_SIZE);
 
@@ -30,16 +29,16 @@ int main(int argc, char **argv)
     //Listagem à ordenar
     int **unordered = makeUnorderedList(LIST_SIZE, TESTS_AMOUNT);
     //Algoritmos de ordenação;
-    std::list<sort> sorts;
-    sorts.push_back(bubbleSort);
-    sorts.push_back(selectionSort);
-    sorts.push_back(insertionSort);
-    sorts.push_back(shellSort);
-    sorts.push_back(heapSort);
-    sorts.push_back(mergeSort);
-    sorts.push_back(quickSort);
-    //sorts.push_back(timSort); //Contém erros
-    sorts.push_back(cachedSort);
+    std::map<const char *, sort> sorts;
+    std::map<const char *, sort>::iterator sortsIt;
+    sorts["BUBLE"] = bubbleSort;
+    sorts["SELECTION"] = selectionSort;
+    sorts["INSERTION"] = insertionSort;
+    sorts["SHELL"] = shellSort;
+    sorts["HEAP"] = heapSort;
+    sorts["MERGE"] = mergeSort;
+    sorts["QUICK"] = quickSort;
+    sorts["CACHED"] = cachedSort;
     //Listagem retornado pelo ordenador;
     int *tocheck;
     //Listagem ordenada corretamente
@@ -47,11 +46,12 @@ int main(int argc, char **argv)
     //Totalizador
     std::clock_t startTime, endTime;
     float totalTime;
-    std::list<float> totalTimes;
+    std::map<const char *, float> totalTimes;
 
-
-    for (auto &sort : sorts)
+    for (sortsIt = sorts.begin(); sortsIt != sorts.end(); ++sortsIt)
     {
+        auto sort = sortsIt->second;
+
         totalTime = 0;
         for (int j = 0; j < TESTS_AMOUNT; j++)
         {
@@ -87,16 +87,16 @@ int main(int argc, char **argv)
                       << std::endl;
             */
         }
-        totalTimes.push_back(totalTime);
+        totalTimes[sortsIt->first] = totalTime;
     }
 
     //Exibe o tempo médio por algorítmo
     for (auto &time : totalTimes)
     {
-        std::cout << "Alg:  "
-            << " Average Time: " << std::setw(8) << (time / TESTS_AMOUNT)
-            << " Total Time: " << time
-            << std::endl;
+        std::cout << "Alg:  " << std::setw(10) << time.first
+                  << " Average Time: " << std::setw(8) << (time.second / TESTS_AMOUNT)
+                  << " Total Time: " << time.second
+                  << std::endl;
     }
 #ifdef COUNT_OPERATION
     printTotalOperations();

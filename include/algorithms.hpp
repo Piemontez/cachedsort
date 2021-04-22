@@ -1,8 +1,6 @@
 #ifndef ALGORITHMS_H
 #define ALGORITHMS_H
 
-void timSort(int *list, const int &size);
-
 void mergeSort(int *list, const int &size);
 
 void quickSort(int *list, const int &size);
