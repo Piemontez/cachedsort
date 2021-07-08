@@ -18,12 +18,12 @@ struct cachedTreeOperation
     int *order{nullptr};
 };
 
-cachedTreeOperation *root;
+cachedTreeOperation *root2;
 
-void cachedSort(int *list, const int &size)
+void cachedSort2(int *list, const int &size)
 {
     ADD_OPERATION_COUNT("CACHED", OperationType::Others, 3);
-    auto leaf = root;
+    auto leaf = root2;
     int pos = 1;
     for (;;)
     {
@@ -60,7 +60,8 @@ void cachedSort(int *list, const int &size)
     auto newList = new int[size];
     ADD_OPERATION_COUNT("CACHED", OperationType::Others, 1);
     ADD_OPERATION_COUNT("CACHED", OperationType::Conditional, 1);
-    for(int pos = 0; pos < size; pos++) {
+    for (int pos = 0; pos < size; pos++)
+    {
         ADD_OPERATION_COUNT("CACHED", OperationType::Loop, 1);
         ADD_OPERATION_COUNT("CACHED", OperationType::Swap, 1);
         newList[pos] = list[leaf->order[pos]];
@@ -79,7 +80,7 @@ void cachedSort(int *list, const int &size)
  * @param lastLeafOrdered folha com a ultima ordenação
  * @param newPos posição do novo item na lista
  */
-void makeCachedOrder(cachedTreeOperation *leaf, const int &currentLevel, cachedTreeOperation *lastLeafOrdered, const int &newPos)
+void makeCachedOrder2(cachedTreeOperation *leaf, const int &currentLevel, cachedTreeOperation *lastLeafOrdered, const int &newPos)
 {
     leaf->order = new int[currentLevel + 1];
     if (currentLevel == 0)
@@ -98,9 +99,54 @@ void makeCachedOrder(cachedTreeOperation *leaf, const int &currentLevel, cachedT
 }
 
 /**
+ * Modifica a lista de ordem para as movimentações necessárias para realizar a ordenação
+ * Ex: uma lista com os números 321 apenas precisam mover a posição 3 para a 1 para ordenar a lista
+ * @param leaf nova folha
+ * @param currentLevel nivel do ramo 
+ */
+void makeCachedMoveOrder2(cachedTreeOperation *leaf, const int &currentLevel)
+{
+    auto order = new int[currentLevel];
+    if (currentLevel != 0)
+    {
+        //leaf->order[0] = leaf->order[0];
+        order[0] = leaf->order[0];
+        for (int pos = 1; pos < currentLevel; pos++)
+        {
+            //Se o próximo cache foi movido de posição consulta a posição
+            if (leaf->order[pos] < pos)
+            {
+                leaf->order[pos] = order[pos];
+                order[pos] = leaf->order[pos];
+            }
+            else
+            {
+                order[pos] = leaf->order[pos];
+                leaf->order[pos] = leaf->order[pos];
+            }
+        }
+    }
+}
+
+/*
+205314
+
+
+225355
+
+574685  225355  205314 
+4 5     2
+ 57     2
+  5  7  5
+   6    3
+    78  5
+     8  5
+*/
+
+/**
  * 
  */
-cachedTreeOperation *makeTree(
+cachedTreeOperation *makeTree2(
     const CachedOperation &nextOperation,
     const int &leftPos,
     const int &rightPos,
@@ -109,6 +155,7 @@ cachedTreeOperation *makeTree(
     cachedTreeOperation *lastLeafOrdered,
     const int &newPos)
 {
+
     //Nova operação
     auto leaf = new cachedTreeOperation;
     leaf->operation = (int)nextOperation;
@@ -124,7 +171,7 @@ cachedTreeOperation *makeTree(
     //Se for um novo ramo de posições o cache de ordenação até a posição atual.
     case CachedOperation::NewBranch:
     {
-        makeCachedOrder(leaf, currentLevel, lastLeafOrdered, newPos);
+        makeCachedOrder2(leaf, currentLevel, lastLeafOrdered, newPos);
         lastLeafOrdered = leaf;
         //Fim do nó
         if (currentLevel + 1 > maxLevel)
@@ -145,32 +192,35 @@ cachedTreeOperation *makeTree(
         leaf->posToCompare = lastLeafOrdered->order[middle];
         if (lastLeftComparison)
         {
-            leaf->left = makeTree(CachedOperation::NewBranch, 0, currentLevel + 1, currentLevel + 1, maxLevel, lastLeafOrdered, middle);
+            leaf->left = makeTree2(CachedOperation::NewBranch, 0, currentLevel + 1, currentLevel + 1, maxLevel, lastLeafOrdered, middle);
         }
         else
         {
-            leaf->left = makeTree(CachedOperation::Compare, leftPos, middle - 1, currentLevel, maxLevel, lastLeafOrdered, 0);
+            leaf->left = makeTree2(CachedOperation::Compare, leftPos, middle - 1, currentLevel, maxLevel, lastLeafOrdered, 0);
         }
         if (lastRightComparison)
         {
-            leaf->right = makeTree(CachedOperation::NewBranch, 0, currentLevel + 1, currentLevel + 1, maxLevel, lastLeafOrdered, middle + 1);
+            leaf->right = makeTree2(CachedOperation::NewBranch, 0, currentLevel + 1, currentLevel + 1, maxLevel, lastLeafOrdered, middle + 1);
         }
         else
         {
-            leaf->right = makeTree(CachedOperation::Compare, middle + 1, rightPos, currentLevel, maxLevel, lastLeafOrdered, 0);
+            leaf->right = makeTree2(CachedOperation::Compare, middle + 1, rightPos, currentLevel, maxLevel, lastLeafOrdered, 0);
         }
         break;
     }
     default:
         break;
     }
+
+    makeCachedMoveOrder2(leaf, currentLevel);
+
     return leaf;
 }
 
-void makeTree(const int &size)
+void makeTree2(const int &size)
 {
     assert(size > 1);
-    root = makeTree(CachedOperation::NewBranch, 0, 0, 0, size - 1, nullptr, 0);
+    root2 = makeTree2(CachedOperation::NewBranch, 0, 0, 0, size - 1, nullptr, 0);
 }
 /*
 321 231 213   312 132 123

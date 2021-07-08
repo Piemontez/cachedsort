@@ -6,7 +6,7 @@ set(CMAKE_BUILD_TYPE Debug)
 file(GLOB SOURCES "*.cpp")
 
 #definitions
-add_definitions(-DCOUNT_OPERATION) #Comment this line to not show the total operations
+#add_definitions(-DCOUNT_OPERATION) #Comment this line to not show the total operations
 
 
 #flags
@@ -37,6 +37,7 @@ add_executable(cachedsort
     src/tools.cpp
     src/algorithms.cpp
     src/cachedsort.cpp
+    src/cachedsort2.cpp
 )
 
 install(TARGETS cachedsort 

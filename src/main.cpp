@@ -9,8 +9,8 @@
 #include "algorithms.hpp"
 #include "tools.hpp"
 
-#define LIST_SIZE 10
-#define TESTS_AMOUNT 10
+#define LIST_SIZE 8
+#define TESTS_AMOUNT 8
 
 int main(int argc, char **argv)
 {
@@ -23,6 +23,7 @@ int main(int argc, char **argv)
 
     std::cout << "Creating cached tree." << std::endl;
     makeTree(LIST_SIZE);
+    makeTree2(LIST_SIZE);
 
     std::cout << "Creating unordered lists." << std::endl;
 
@@ -39,6 +40,7 @@ int main(int argc, char **argv)
     sorts["MERGE"] = mergeSort;
     sorts["QUICK"] = quickSort;
     sorts["CACHED"] = cachedSort;
+    sorts["CACHED2"] = cachedSort2;
     //Listagem retornado pelo ordenador;
     int *tocheck;
     //Listagem ordenada corretamente
