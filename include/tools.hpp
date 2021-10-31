@@ -59,6 +59,9 @@ void addOperationCount(const char* sortedName, const OperationType &operationTyp
 void printTotalOperations();
 
 
-
+/**
+ * Fatoria de um número
+ */
+unsigned long long factorial( int n );
 
 #endif // TOOLS_H

@@ -11,15 +11,20 @@
 #include "tools.hpp"
 
 #define LIST_SIZE 6
-#define TESTS_AMOUNT 720
+#define TESTS_AMOUNT 1000
 
 int main(int argc, char **argv)
 {
+    const int listAmount = factorial(LIST_SIZE);
     std::cout << "Start tests with sorted lists."
               << std::endl
               << "List size: " << LIST_SIZE
               << std::endl
-              << "Unordered lists:" << TESTS_AMOUNT
+              << "List Amount (List!):" << listAmount
+              << std::endl
+              << "Tests Amount:" << TESTS_AMOUNT
+              << std::endl
+              << "Total Tests:" << (TESTS_AMOUNT * listAmount)
               << std::endl;
 
     std::cout << "Creating cached tree." << std::endl;
@@ -29,7 +34,7 @@ int main(int argc, char **argv)
     std::cout << "Creating unordered lists." << std::endl;
 
     //Listagem à ordenar
-    int **unordered = makeUnorderedList(LIST_SIZE, TESTS_AMOUNT);
+    int **unordered = makeUnorderedList(LIST_SIZE, listAmount);
     //Algoritmos de ordenação;
     std::map<const char *, sort> sorts;
     std::map<const char *, sort>::iterator sortsIt;
@@ -51,7 +56,7 @@ int main(int argc, char **argv)
     float totalTime;
     std::map<const char *, float> totalTimes;
 
-    {//Altera para a prioridade máximo do pc
+    { //Altera para a prioridade máximo do pc
         int policy;
         struct sched_param param;
         pthread_getschedparam(pthread_self(), &policy, &param);
@@ -63,39 +68,42 @@ int main(int argc, char **argv)
         auto sort = sortsIt->second;
 
         totalTime = 0;
-        for (int j = 0; j < TESTS_AMOUNT; j++)
+        for (int k = 0; k < TESTS_AMOUNT; k++)
         {
-            //Cópia da listagem a ser ordenada
-            tocheck = new int[LIST_SIZE];
-            std::copy(unordered[j], unordered[j] + LIST_SIZE, tocheck);
+            for (int j = 0; j < listAmount; j++)
+            {
+                //Cópia da listagem a ser ordenada
+                tocheck = new int[LIST_SIZE];
+                std::copy(unordered[j], unordered[j] + LIST_SIZE, tocheck);
 
-            //Ordena a listagem
-            startTime = std::clock();
-            sort(tocheck, LIST_SIZE);
-            endTime = std::clock();
+                //Ordena a listagem
+                startTime = std::clock();
+                sort(tocheck, LIST_SIZE);
+                endTime = std::clock();
 
-            //Contabiliza o tempo gasto
-            totalTime += endTime - startTime;
-            //Imprime a listagem
-            //printList(unordered[j], LIST_SIZE);
-            //printList(tocheck, LIST_SIZE);
+                //Contabiliza o tempo gasto
+                totalTime += endTime - startTime;
+                //Imprime a listagem
+                //printList(unordered[j], LIST_SIZE);
+                //printList(tocheck, LIST_SIZE);
 
-            //Verifica se ordenou a listagem corretamente;
-            safeOrder = safeSort(unordered[j], LIST_SIZE);
-            bool isEqual = isEquals(safeOrder, tocheck, LIST_SIZE);
+                //Verifica se ordenou a listagem corretamente;
+                safeOrder = safeSort(unordered[j], LIST_SIZE);
+                bool isEqual = isEquals(safeOrder, tocheck, LIST_SIZE);
 
-            //Dispacha memória não utilizada
-            delete[] tocheck;
-            delete[] safeOrder;
-            assert(isEqual);
+                //Dispacha memória não utilizada
+                delete[] tocheck;
+                delete[] safeOrder;
+                assert(isEqual);
 
-            /*
+                /*
             std::cout << "Alg:  "
                       << " Test: " << j
                       << " Ordened: " << (isEqual ? "true" : "false")
                       << " Time: " << (endTime - startTime)
                       << std::endl;
             */
+            }
         }
         totalTimes[sortsIt->first] = totalTime;
     }
@@ -104,7 +112,7 @@ int main(int argc, char **argv)
     for (auto &time : totalTimes)
     {
         std::cout << "Alg:  " << std::setw(10) << time.first
-                  << " Average Time: " << std::setw(8) << (time.second / TESTS_AMOUNT)
+                  << " Average Time: " << std::setw(8) << (time.second / (TESTS_AMOUNT * listAmount))
                   << " Total Time: " << time.second
                   << std::endl;
     }

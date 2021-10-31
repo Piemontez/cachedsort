@@ -114,3 +114,13 @@ void printTotalOperations()
         std::cout << std::endl;
     }
 }
+
+unsigned long long factorial( int n )
+{
+    unsigned long long f = 1;
+
+    while( n > 0 )
+        f *= n--;
+
+    return f;
+}
