@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <iostream>
+#include <assert.h>
 #include <map>
 #include <cstring>
 #include <time.h> /* time */
@@ -8,37 +9,30 @@
 #include "tools.hpp"
 #include "algorithms.hpp"
 
-int **makeUnorderedList(const int listsize, const int randomvaluesamout)
+int **makeUnorderedList(const int listsize, const int maxtests)
 {
+    assert(maxtests > 0);
+
     srand(time(NULL));
 
-    int **matrix = new int *[randomvaluesamout];
-    if (randomvaluesamout > 0)
-        matrix[0] = new int[listsize];
-    if (randomvaluesamout > 1)
-        matrix[1] = new int[listsize];
+    int **matrix = new int *[maxtests];
 
+    //Cria uma lista ordenada para o primeiro elemento do array
+    matrix[0] = new int[listsize];
+    matrix[maxtests] = new int[listsize];
     for (int i = 0; i < listsize; ++i)
     {
-        //Cria uma lista ordenada
-        if (randomvaluesamout > 0)
-        {
-            matrix[0][i] = i;
-        }
-        //Cria uma lista ordenada invertida
-        if (randomvaluesamout > 1)
-        {
-            matrix[1][i] = listsize - i - 1;
-        }
+        matrix[0][i] = i;
+        matrix[maxtests][i] = i;
     }
-    for (int i = 2; i < randomvaluesamout; ++i)
+    int i = 0;
+    while (std::next_permutation(matrix[maxtests], matrix[maxtests] + listsize) && i <= maxtests)
     {
+        i++;
         matrix[i] = new int[listsize];
-        for (int j = 0; j < listsize; ++j)
-        {
-            matrix[i][j] = rand() % 10 + 1;
-        }
-    }
+        std::copy(matrix[maxtests], matrix[maxtests] + listsize, matrix[i]);
+    };
+
     return matrix;
 }
 

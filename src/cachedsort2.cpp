@@ -22,33 +22,33 @@ cachedTreeOperation *root2;
 
 void cachedSort2(int *list, const int &size)
 {
-    ADD_OPERATION_COUNT("CACHED", OperationType::Others, 3);
+    ADD_OPERATION_COUNT("CACHED2", OperationType::Others, 3);
     auto leaf = root2;
     int pos = 1;
     for (;;)
     {
-        ADD_OPERATION_COUNT("CACHED", OperationType::Loop, 1);
+        ADD_OPERATION_COUNT("CACHED2", OperationType::Loop, 1);
         //Compara novos registros
-        ADD_OPERATION_COUNT("CACHED", OperationType::Conditional, 1);
-        ADD_OPERATION_COUNT("CACHED", OperationType::Compare, 1);
+        ADD_OPERATION_COUNT("CACHED2", OperationType::Conditional, 1);
+        ADD_OPERATION_COUNT("CACHED2", OperationType::Compare, 1);
         if (list[leaf->posToCompare] > list[pos])
         {
-            ADD_OPERATION_COUNT("CACHED", OperationType::Others, 1);
+            ADD_OPERATION_COUNT("CACHED2", OperationType::Others, 1);
             leaf = leaf->left;
         }
         else
         {
-            ADD_OPERATION_COUNT("CACHED", OperationType::Others, 1);
+            ADD_OPERATION_COUNT("CACHED2", OperationType::Others, 1);
             leaf = leaf->right;
         }
 
         //Se trocou de ramo
-        ADD_OPERATION_COUNT("CACHED", OperationType::Conditional, 1);
+        ADD_OPERATION_COUNT("CACHED2", OperationType::Conditional, 1);
         if (leaf->operation == (int)CachedOperation::NewBranch)
         {
-            ADD_OPERATION_COUNT("CACHED", OperationType::AcumulatorChange, 1);
+            ADD_OPERATION_COUNT("CACHED2", OperationType::AcumulatorChange, 1);
             pos++;
-            ADD_OPERATION_COUNT("CACHED", OperationType::Conditional, 1);
+            ADD_OPERATION_COUNT("CACHED2", OperationType::Conditional, 1);
             if (pos == size)
             {
                 break;
@@ -56,21 +56,18 @@ void cachedSort2(int *list, const int &size)
         }
     }
     //Reordena listagem conforme cache
-    ADD_OPERATION_COUNT("CACHED", OperationType::Others, 1);
-    auto newList = new int[size];
-    ADD_OPERATION_COUNT("CACHED", OperationType::Others, 1);
-    ADD_OPERATION_COUNT("CACHED", OperationType::Conditional, 1);
+    ADD_OPERATION_COUNT("CACHED2", OperationType::Others, 1);
+    ADD_OPERATION_COUNT("CACHED2", OperationType::Conditional, 1);
+    
     for (int pos = 0; pos < size; pos++)
     {
-        ADD_OPERATION_COUNT("CACHED", OperationType::Loop, 1);
-        ADD_OPERATION_COUNT("CACHED", OperationType::Swap, 1);
-        newList[pos] = list[leaf->order[pos]];
+        ADD_OPERATION_COUNT("CACHED2", OperationType::Loop, 1);
+        ADD_OPERATION_COUNT("CACHED2", OperationType::Swap, 1);
+        std::swap(list[pos], list[leaf->order[pos]]);
 
-        ADD_OPERATION_COUNT("CACHED", OperationType::AcumulatorChange, 1);
-        ADD_OPERATION_COUNT("CACHED", OperationType::Conditional, 1);
+        ADD_OPERATION_COUNT("CACHED2", OperationType::AcumulatorChange, 1);
+        ADD_OPERATION_COUNT("CACHED2", OperationType::Conditional, 1);
     }
-    ADD_OPERATION_COUNT("CACHED", OperationType::Swap, size);
-    std::copy(newList, newList + size, list);
 }
 
 /**
@@ -106,41 +103,38 @@ void makeCachedOrder2(cachedTreeOperation *leaf, const int &currentLevel, cached
  */
 void makeCachedMoveOrder2(cachedTreeOperation *leaf, const int &currentLevel)
 {
+    int aux;
     auto order = new int[currentLevel];
     if (currentLevel != 0)
     {
         //leaf->order[0] = leaf->order[0];
         order[0] = leaf->order[0];
-        for (int pos = 1; pos < currentLevel; pos++)
+
+        for (int pos = 1; pos <= currentLevel; pos++)
         {
             //Se o próximo cache foi movido de posição consulta a posição
             if (leaf->order[pos] < pos)
             {
-                leaf->order[pos] = order[pos];
-                order[pos] = leaf->order[pos];
+                aux = order[leaf->order[pos]];
+                while (aux < pos && aux != order[aux])
+                {
+                    aux = order[aux];
+                }
+                order[pos] = aux;
+                leaf->order[pos] = aux;
             }
             else
             {
                 order[pos] = leaf->order[pos];
-                leaf->order[pos] = leaf->order[pos];
+                //leaf->order[pos] = leaf->order[pos];
             }
         }
     }
 }
-
 /*
-205314
+3210  3210
+3223
 
-
-225355
-
-574685  225355  205314 
-4 5     2
- 57     2
-  5  7  5
-   6    3
-    78  5
-     8  5
 */
 
 /**
@@ -193,6 +187,7 @@ cachedTreeOperation *makeTree2(
         if (lastLeftComparison)
         {
             leaf->left = makeTree2(CachedOperation::NewBranch, 0, currentLevel + 1, currentLevel + 1, maxLevel, lastLeafOrdered, middle);
+            makeCachedMoveOrder2(leaf->left, currentLevel + 1);
         }
         else
         {
@@ -201,18 +196,18 @@ cachedTreeOperation *makeTree2(
         if (lastRightComparison)
         {
             leaf->right = makeTree2(CachedOperation::NewBranch, 0, currentLevel + 1, currentLevel + 1, maxLevel, lastLeafOrdered, middle + 1);
+            makeCachedMoveOrder2(leaf->right, currentLevel + 1);
         }
         else
         {
             leaf->right = makeTree2(CachedOperation::Compare, middle + 1, rightPos, currentLevel, maxLevel, lastLeafOrdered, 0);
         }
+
         break;
     }
     default:
         break;
     }
-
-    makeCachedMoveOrder2(leaf, currentLevel);
 
     return leaf;
 }

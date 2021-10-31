@@ -4,13 +4,14 @@
 #include <map>
 #include <assert.h>
 #include <iomanip>
+#include <pthread.h>
 
 #include "cachedsort.hpp"
 #include "algorithms.hpp"
 #include "tools.hpp"
 
-#define LIST_SIZE 8
-#define TESTS_AMOUNT 8
+#define LIST_SIZE 6
+#define TESTS_AMOUNT 720
 
 int main(int argc, char **argv)
 {
@@ -50,6 +51,13 @@ int main(int argc, char **argv)
     float totalTime;
     std::map<const char *, float> totalTimes;
 
+    {//Altera para a prioridade máximo do pc
+        int policy;
+        struct sched_param param;
+        pthread_getschedparam(pthread_self(), &policy, &param);
+        param.sched_priority = sched_get_priority_max(policy);
+        pthread_setschedparam(pthread_self(), policy, &param);
+    }
     for (sortsIt = sorts.begin(); sortsIt != sorts.end(); ++sortsIt)
     {
         auto sort = sortsIt->second;

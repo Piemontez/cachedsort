@@ -10,7 +10,7 @@ typedef void(*sort)(int *list, const int &size);
  * @listsize: quantidade de itens na lista
  * @testsamout: quantidade de itens aleatórios a serem testados
  */
-int** makeUnorderedList(const int listsize, const int testsamout);
+int** makeUnorderedList(const int listsize, const int maxtests);
 
 /**
  * Cria uma lista ordenada para comparação
