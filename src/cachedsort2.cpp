@@ -23,7 +23,7 @@ cachedTreeOperation *root2;
 void cachedSort2(int *list, const int &size)
 {
     ADD_OPERATION_COUNT("CACHED2", OperationType::Others, 3);
-    auto leaf = root2;
+    ::cachedTreeOperation * leaf = root2;
     int pos = 1;
     for (;;)
     {
@@ -58,7 +58,7 @@ void cachedSort2(int *list, const int &size)
     //Reordena listagem conforme cache
     ADD_OPERATION_COUNT("CACHED2", OperationType::Others, 1);
     ADD_OPERATION_COUNT("CACHED2", OperationType::Conditional, 1);
-    
+
     for (int pos = 0; pos < size; pos++)
     {
         ADD_OPERATION_COUNT("CACHED2", OperationType::Loop, 1);
@@ -104,7 +104,7 @@ void makeCachedOrder2(cachedTreeOperation *leaf, const int &currentLevel, cached
 void makeCachedMoveOrder2(cachedTreeOperation *leaf, const int &currentLevel)
 {
     int aux;
-    auto order = new int[currentLevel];
+    int *order = new int[currentLevel + 1];
     if (currentLevel != 0)
     {
         //leaf->order[0] = leaf->order[0];
@@ -130,13 +130,8 @@ void makeCachedMoveOrder2(cachedTreeOperation *leaf, const int &currentLevel)
             }
         }
     }
+    delete[] order;
 }
-/*
-3210  3210
-3223
-
-*/
-
 /**
  * 
  */
@@ -151,7 +146,7 @@ cachedTreeOperation *makeTree2(
 {
 
     //Nova operação
-    auto leaf = new cachedTreeOperation;
+    ::cachedTreeOperation *leaf = new cachedTreeOperation;
     leaf->operation = (int)nextOperation;
 
     //Inicia primeira posição da arvore

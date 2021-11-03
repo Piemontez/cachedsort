@@ -16,21 +16,22 @@ int **makeUnorderedList(const int listsize, const int maxtests)
     srand(time(NULL));
 
     int **matrix = new int *[maxtests];
+    const int lastIdx = maxtests - 1;
 
     //Cria uma lista ordenada para o primeiro elemento do array
     matrix[0] = new int[listsize];
-    matrix[maxtests] = new int[listsize];
+    matrix[lastIdx] = new int[listsize];
     for (int i = 0; i < listsize; ++i)
     {
         matrix[0][i] = i;
-        matrix[maxtests][i] = i;
+        matrix[lastIdx][i] = i;
     }
     int i = 0;
-    while (std::next_permutation(matrix[maxtests], matrix[maxtests] + listsize) && i <= maxtests)
+    while (std::next_permutation(matrix[lastIdx], matrix[lastIdx] + listsize) && i <= maxtests)
     {
         i++;
         matrix[i] = new int[listsize];
-        std::copy(matrix[maxtests], matrix[maxtests] + listsize, matrix[i]);
+        std::copy(matrix[lastIdx], matrix[lastIdx] + listsize, matrix[i]);
     };
 
     return matrix;

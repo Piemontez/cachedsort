@@ -10,8 +10,8 @@
 #include "algorithms.hpp"
 #include "tools.hpp"
 
-#define LIST_SIZE 6
-#define TESTS_AMOUNT 1000
+#define LIST_SIZE 10
+#define TESTS_AMOUNT 1
 
 int main(int argc, char **argv)
 {
@@ -28,13 +28,14 @@ int main(int argc, char **argv)
               << std::endl;
 
     std::cout << "Creating cached tree." << std::endl;
-    makeTree(LIST_SIZE);
+    //makeTree(LIST_SIZE);
     makeTree2(LIST_SIZE);
 
     std::cout << "Creating unordered lists." << std::endl;
-
     //Listagem à ordenar
     int **unordered = makeUnorderedList(LIST_SIZE, listAmount);
+
+    std::cout << "Lining up algorithms." << std::endl;
     //Algoritmos de ordenação;
     std::map<const char *, sort> sorts;
     std::map<const char *, sort>::iterator sortsIt;
@@ -45,7 +46,7 @@ int main(int argc, char **argv)
     sorts["HEAP"] = heapSort;
     sorts["MERGE"] = mergeSort;
     sorts["QUICK"] = quickSort;
-    sorts["CACHED"] = cachedSort;
+    //sorts["CACHED"] = cachedSort;
     sorts["CACHED2"] = cachedSort2;
     //Listagem retornado pelo ordenador;
     int *tocheck;
@@ -63,6 +64,7 @@ int main(int argc, char **argv)
         param.sched_priority = sched_get_priority_max(policy);
         pthread_setschedparam(pthread_self(), policy, &param);
     }
+    std::cout << "Starting sorting lists." << std::endl;
     for (sortsIt = sorts.begin(); sortsIt != sorts.end(); ++sortsIt)
     {
         auto sort = sortsIt->second;
