@@ -10,12 +10,12 @@ enum class CachedOperation
 };
 
 struct cachedTreeOperation
-{
-    int operation; //0 compare, //1 trocar de folha //2 finalizar 2 ordenas
-    int posToCompare;
-    cachedTreeOperation *left{nullptr};
-    cachedTreeOperation *right{nullptr};
-    int *order{nullptr};
+{                                        //Estrutura dos elementos na arvore
+    int posToCompare;                    //Posição a ser comparada
+    int *order{nullptr};                 //Lista com as posições ordenadas
+    cachedTreeOperation *left{nullptr};  //Próximo nó com a posição a ser comparada
+    cachedTreeOperation *right{nullptr}; //Próximo nó com a posição a ser comparada
+    int operation;                       //Identifica se esta num novo ramo da arvore
 };
 
 cachedTreeOperation *root;
@@ -23,33 +23,28 @@ cachedTreeOperation *root;
 void cachedSort(int *list, const int &size)
 {
     ADD_OPERATION_COUNT("CACHED", OperationType::Others, 3);
-    auto leaf = root;
-    int pos = 1;
+    auto leaf = root; //Nó atual com as comparações a serem realizadas
+    int pos = 1;      //Indicador de posição
     for (;;)
     {
         ADD_OPERATION_COUNT("CACHED", OperationType::Loop, 1);
         //Compara novos registros
         ADD_OPERATION_COUNT("CACHED", OperationType::Conditional, 1);
         ADD_OPERATION_COUNT("CACHED", OperationType::Compare, 1);
-        if (list[leaf->posToCompare] > list[pos])
-        {
-            ADD_OPERATION_COUNT("CACHED", OperationType::Others, 1);
-            leaf = leaf->left;
-        }
-        else
-        {
-            ADD_OPERATION_COUNT("CACHED", OperationType::Others, 1);
-            leaf = leaf->right;
-        }
+        ADD_OPERATION_COUNT("CACHED", OperationType::Others, 1);
+        //Compara o alvo a ser comparado
+        //com o valor da posição indicada no cached sort
+        leaf = list[leaf->posToCompare] > list[pos]
+                   ? leaf->left   //Retornar a próxima comparação ou ramo
+                   : leaf->right; //Retornar a próxima comparação ou ramo
 
-        //Se trocou de ramo
+        //Verifica se chegou na ultima comparação do nó
         ADD_OPERATION_COUNT("CACHED", OperationType::Conditional, 1);
         if (leaf->operation == (int)CachedOperation::NewBranch)
         {
             ADD_OPERATION_COUNT("CACHED", OperationType::AcumulatorChange, 1);
-            pos++;
             ADD_OPERATION_COUNT("CACHED", OperationType::Conditional, 1);
-            if (pos == size)
+            if (++pos == size)
             {
                 break;
             }
@@ -60,7 +55,8 @@ void cachedSort(int *list, const int &size)
     auto newList = new int[size];
     ADD_OPERATION_COUNT("CACHED", OperationType::Others, 1);
     ADD_OPERATION_COUNT("CACHED", OperationType::Conditional, 1);
-    for(int pos = 0; pos < size; pos++) {
+    for (int pos = 0; pos < size; pos++)
+    {
         ADD_OPERATION_COUNT("CACHED", OperationType::Loop, 1);
         ADD_OPERATION_COUNT("CACHED", OperationType::Swap, 1);
         newList[pos] = list[leaf->order[pos]];

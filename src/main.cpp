@@ -10,11 +10,15 @@
 #include "algorithms.hpp"
 #include "tools.hpp"
 
-#define LIST_SIZE 10
-#define TESTS_AMOUNT 1
+#define LIST_SIZE 6
+#define TESTS_AMOUNT 10
 
 int main(int argc, char **argv)
 {
+    makeTree2(LIST_SIZE);
+    if (true)
+        return 0;
+
     const int listAmount = factorial(LIST_SIZE);
     std::cout << "Start tests with sorted lists."
               << std::endl
@@ -28,7 +32,7 @@ int main(int argc, char **argv)
               << std::endl;
 
     std::cout << "Creating cached tree." << std::endl;
-    //makeTree(LIST_SIZE);
+    makeTree(LIST_SIZE);
     makeTree2(LIST_SIZE);
 
     std::cout << "Creating unordered lists." << std::endl;
@@ -46,8 +50,8 @@ int main(int argc, char **argv)
     sorts["HEAP"] = heapSort;
     sorts["MERGE"] = mergeSort;
     sorts["QUICK"] = quickSort;
-    //sorts["CACHED"] = cachedSort;
     sorts["CACHED2"] = cachedSort2;
+    sorts["CACHED"] = cachedSort;
     //Listagem retornado pelo ordenador;
     int *tocheck;
     //Listagem ordenada corretamente

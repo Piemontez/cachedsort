@@ -23,7 +23,7 @@ cachedTreeOperation *root2;
 void cachedSort2(int *list, const int &size)
 {
     ADD_OPERATION_COUNT("CACHED2", OperationType::Others, 3);
-    ::cachedTreeOperation * leaf = root2;
+    ::cachedTreeOperation *leaf = root2;
     int pos = 1;
     for (;;)
     {
@@ -31,25 +31,20 @@ void cachedSort2(int *list, const int &size)
         //Compara novos registros
         ADD_OPERATION_COUNT("CACHED2", OperationType::Conditional, 1);
         ADD_OPERATION_COUNT("CACHED2", OperationType::Compare, 1);
-        if (list[leaf->posToCompare] > list[pos])
-        {
-            ADD_OPERATION_COUNT("CACHED2", OperationType::Others, 1);
-            leaf = leaf->left;
-        }
-        else
-        {
-            ADD_OPERATION_COUNT("CACHED2", OperationType::Others, 1);
-            leaf = leaf->right;
-        }
+        ADD_OPERATION_COUNT("CACHED", OperationType::Others, 1);
+        //Compara o alvo a ser comparado
+        //com o valor da posição indicada no cached sort
+        leaf = list[leaf->posToCompare] > list[pos]
+                   ? leaf->left   //Retornar a próxima comparação ou ramo
+                   : leaf->right; //Retornar a próxima comparação ou ramo
 
-        //Se trocou de ramo
+        //Verifica se chegou na ultima comparação do nó
         ADD_OPERATION_COUNT("CACHED2", OperationType::Conditional, 1);
         if (leaf->operation == (int)CachedOperation::NewBranch)
         {
             ADD_OPERATION_COUNT("CACHED2", OperationType::AcumulatorChange, 1);
-            pos++;
             ADD_OPERATION_COUNT("CACHED2", OperationType::Conditional, 1);
-            if (pos == size)
+            if (++pos == size)
             {
                 break;
             }
@@ -59,10 +54,13 @@ void cachedSort2(int *list, const int &size)
     ADD_OPERATION_COUNT("CACHED2", OperationType::Others, 1);
     ADD_OPERATION_COUNT("CACHED2", OperationType::Conditional, 1);
 
+    //int cachedPos;
     for (int pos = 0; pos < size; pos++)
     {
         ADD_OPERATION_COUNT("CACHED2", OperationType::Loop, 1);
         ADD_OPERATION_COUNT("CACHED2", OperationType::Swap, 1);
+        //cachedPos = leaf->order[pos];
+        //if (pos != cachedPos)
         std::swap(list[pos], list[leaf->order[pos]]);
 
         ADD_OPERATION_COUNT("CACHED2", OperationType::AcumulatorChange, 1);
