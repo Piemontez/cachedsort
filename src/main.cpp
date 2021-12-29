@@ -11,47 +11,47 @@
 #include "tools.hpp"
 
 #define LIST_SIZE 6
-#define TESTS_AMOUNT 10
+#define TESTS_QTD 10
+#define TESTS_RETAKE 2
 
 int main(int argc, char **argv)
 {
-    makeTree2(LIST_SIZE);
-    if (true)
-        return 0;
+    //Caso informado 0 cria todas as possibilidades de ordem para o tamanho da lista
+    const unsigned long long listAmount = TESTS_QTD ? TESTS_QTD : factorial(LIST_SIZE);
 
-    const int listAmount = factorial(LIST_SIZE);
     std::cout << "Start tests with sorted lists."
               << std::endl
               << "List size: " << LIST_SIZE
               << std::endl
               << "List Amount (List!):" << listAmount
               << std::endl
-              << "Tests Amount:" << TESTS_AMOUNT
+              << "Tests Amount:" << TESTS_RETAKE
               << std::endl
-              << "Total Tests:" << (TESTS_AMOUNT * listAmount)
+              << "Total Tests:" << (TESTS_RETAKE * listAmount)
               << std::endl;
 
     std::cout << "Creating cached tree." << std::endl;
-    makeTree(LIST_SIZE);
-    makeTree2(LIST_SIZE);
+    //makeTree(LIST_SIZE);
+    //makeTree2(LIST_SIZE);
 
     std::cout << "Creating unordered lists." << std::endl;
     //Listagem à ordenar
-    int **unordered = makeUnorderedList(LIST_SIZE, listAmount);
+    int **unordered = makeUnorderedList(LIST_SIZE, listAmount, !TESTS_QTD);
 
     std::cout << "Lining up algorithms." << std::endl;
     //Algoritmos de ordenação;
     std::map<const char *, sort> sorts;
     std::map<const char *, sort>::iterator sortsIt;
-    sorts["BUBLE"] = bubbleSort;
-    sorts["SELECTION"] = selectionSort;
-    sorts["INSERTION"] = insertionSort;
+    //sorts["BUBLE"] = bubbleSort;
+    //sorts["SELECTION"] = selectionSort;
+    //sorts["INSERTION"] = insertionSort;
     sorts["SHELL"] = shellSort;
     sorts["HEAP"] = heapSort;
     sorts["MERGE"] = mergeSort;
     sorts["QUICK"] = quickSort;
-    sorts["CACHED2"] = cachedSort2;
-    sorts["CACHED"] = cachedSort;
+    //sorts["CACHED"] = cachedSort;
+    //sorts["CACHED2"] = cachedSort2;
+    sorts["CACHED3"] = cachedSort3;
     //Listagem retornado pelo ordenador;
     int *tocheck;
     //Listagem ordenada corretamente
@@ -74,9 +74,9 @@ int main(int argc, char **argv)
         auto sort = sortsIt->second;
 
         totalTime = 0;
-        for (int k = 0; k < TESTS_AMOUNT; k++)
+        for (int k = 0; k < TESTS_RETAKE; k++)
         {
-            for (int j = 0; j < listAmount; j++)
+            for (unsigned long long j = 0; j < listAmount; j++)
             {
                 //Cópia da listagem a ser ordenada
                 tocheck = new int[LIST_SIZE];
@@ -118,10 +118,20 @@ int main(int argc, char **argv)
     for (auto &time : totalTimes)
     {
         std::cout << "Alg:  " << std::setw(10) << time.first
-                  << " Average Time: " << std::setw(8) << (time.second / (TESTS_AMOUNT * listAmount))
+                  << " Average Time: " << std::setw(8) << (time.second / (TESTS_RETAKE * listAmount))
                   << " Total Time: " << time.second
                   << std::endl;
     }
+
+
+    //Limpando a memória
+    for (unsigned long long i = 0; i < listAmount; ++i)
+    {
+        delete[] unordered[listAmount];
+    }
+    delete[] unordered;
+    return 0;
+
 #ifdef COUNT_OPERATION
     printTotalOperations();
 #endif

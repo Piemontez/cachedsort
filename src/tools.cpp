@@ -9,11 +9,9 @@
 #include "tools.hpp"
 #include "algorithms.hpp"
 
-int **makeUnorderedList(const int listsize, const int maxtests)
+int **makeUnorderedList(const int listsize, const int maxtests, bool permutated)
 {
     assert(maxtests > 0);
-
-    srand(time(NULL));
 
     int **matrix = new int *[maxtests];
     const int lastIdx = maxtests - 1;
@@ -21,18 +19,32 @@ int **makeUnorderedList(const int listsize, const int maxtests)
     //Cria uma lista ordenada para o primeiro elemento do array
     matrix[0] = new int[listsize];
     matrix[lastIdx] = new int[listsize];
+
     for (int i = 0; i < listsize; ++i)
     {
         matrix[0][i] = i;
         matrix[lastIdx][i] = i;
     }
-    int i = 0;
-    while (std::next_permutation(matrix[lastIdx], matrix[lastIdx] + listsize) && i <= maxtests)
+    if (permutated)
     {
-        i++;
-        matrix[i] = new int[listsize];
-        std::copy(matrix[lastIdx], matrix[lastIdx] + listsize, matrix[i]);
-    };
+        int i = 0;
+        while (std::next_permutation(matrix[lastIdx], matrix[lastIdx] + listsize) && i <= maxtests)
+        {
+            i++;
+            matrix[i] = new int[listsize];
+            std::copy(matrix[lastIdx], matrix[lastIdx] + listsize, matrix[i]);
+        };
+    }
+    else
+    { //random
+        srand(time(NULL));
+        for (int j = 1; j < maxtests - 1; j++)
+            for (int i = 0; i < listsize; ++i)
+            {
+                matrix[j] = new int[listsize];
+                matrix[j][i] = rand() % listsize + 1;
+            }
+    }
 
     return matrix;
 }
@@ -116,12 +128,35 @@ void printTotalOperations()
     }
 }
 
-unsigned long long factorial( int n )
+unsigned long long factorial(int n)
 {
     unsigned long long f = 1;
 
-    while( n > 0 )
+    while (n > 0)
         f *= n--;
 
     return f;
+}
+
+void print_byte_as_bits(char val)
+{
+    for (int i = 7; 0 <= i; i--)
+    {
+        printf("%c", (val & (1 << i)) ? '1' : '0');
+    }
+}
+
+void print_bits(unsigned char *bytes, std::size_t num_bytes)
+{
+    printf("[");
+    for (std::size_t i = 0; i < num_bytes; i++)
+    {
+        print_byte_as_bits(bytes[i]);
+        printf(" ");
+        if (i % 8 == 7 && i != num_bytes - 1)
+        {
+            printf("\n ");
+        }
+    }
+    printf("]\n");
 }

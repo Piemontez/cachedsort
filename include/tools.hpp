@@ -1,6 +1,8 @@
 #ifndef TOOLS_H
 #define TOOLS_H
 
+#include <cstddef>
+
 //interface da função chamada para ordenar a listagem
 typedef void(*sort)(int *list, const int &size);
 
@@ -10,7 +12,7 @@ typedef void(*sort)(int *list, const int &size);
  * @listsize: quantidade de itens na lista
  * @testsamout: quantidade de itens aleatórios a serem testados
  */
-int** makeUnorderedList(const int listsize, const int maxtests);
+int** makeUnorderedList(const int listsize, const int maxtests, bool permutated);
 
 /**
  * Cria uma lista ordenada para comparação
@@ -63,5 +65,11 @@ void printTotalOperations();
  * Fatoria de um número
  */
 unsigned long long factorial( int n );
+
+
+/**
+ * Print bits from variabel
+ */
+void print_bits(unsigned char * bytes, std::size_t num_bytes);
 
 #endif // TOOLS_H
