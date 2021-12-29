@@ -6,7 +6,7 @@ Cached Sort source code in c ++ and several performance tests.
 
 ## Algorithms Tested
 
-Cached Sort
+Cached Sort 1, 2 and 3
 
 Bubble Sort
 
@@ -22,7 +22,6 @@ Merge Sort
 
 Quick Sort
 
-Tim Sort
 
 
 ## Build and Run
