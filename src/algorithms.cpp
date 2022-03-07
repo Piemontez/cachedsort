@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include "tools.hpp"
 
@@ -389,4 +390,10 @@ void bubbleSort(int *list, const int &size)
         ADD_OPERATION_COUNT("BUBBLE", OperationType::AcumulatorChange, 1);
     }
     bubbleSort(list, size - 1);
+}
+
+void cppSort(int *list, const int &size)
+{
+    ADD_OPERATION_COUNT("MERGE", OperationType::Others, 1);
+    std::sort(list, list + size);
 }

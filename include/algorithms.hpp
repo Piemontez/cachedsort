@@ -15,4 +15,6 @@ void selectionSort(int *list, const int &size);
 
 void bubbleSort(int *list, const int &size);
 
+void cppSort(int *list, const int &size);
+
 #endif //ALGORITHMS_H

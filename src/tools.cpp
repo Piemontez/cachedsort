@@ -28,7 +28,7 @@ int **makeUnorderedList(const int listsize, const int maxtests, bool permutated)
     if (permutated)
     {
         int i = 0;
-        while (std::next_permutation(matrix[lastIdx], matrix[lastIdx] + listsize) && i <= maxtests)
+        while (std::next_permutation(matrix[lastIdx], matrix[lastIdx] + listsize) && i < maxtests)
         {
             i++;
             matrix[i] = new int[listsize];

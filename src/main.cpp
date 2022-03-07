@@ -11,7 +11,7 @@
 #include "tools.hpp"
 
 #define LIST_SIZE 6
-#define TESTS_QTD 10
+#define TESTS_QTD 0
 #define TESTS_RETAKE 2
 
 int main(int argc, char **argv)
@@ -31,8 +31,8 @@ int main(int argc, char **argv)
               << std::endl;
 
     std::cout << "Creating cached tree." << std::endl;
-    //makeTree(LIST_SIZE);
-    //makeTree2(LIST_SIZE);
+    makeTree(LIST_SIZE);
+    makeTree2(LIST_SIZE);
 
     std::cout << "Creating unordered lists." << std::endl;
     //Listagem à ordenar
@@ -42,13 +42,14 @@ int main(int argc, char **argv)
     //Algoritmos de ordenação;
     std::map<const char *, sort> sorts;
     std::map<const char *, sort>::iterator sortsIt;
-    //sorts["BUBLE"] = bubbleSort;
-    //sorts["SELECTION"] = selectionSort;
-    //sorts["INSERTION"] = insertionSort;
+    sorts["BUBLE"] = bubbleSort;
+    sorts["SELECTION"] = selectionSort;
+    sorts["INSERTION"] = insertionSort;
     sorts["SHELL"] = shellSort;
     sorts["HEAP"] = heapSort;
     sorts["MERGE"] = mergeSort;
     sorts["QUICK"] = quickSort;
+    sorts["CPP"] = cppSort;
     //sorts["CACHED"] = cachedSort;
     //sorts["CACHED2"] = cachedSort2;
     sorts["CACHED3"] = cachedSort3;
